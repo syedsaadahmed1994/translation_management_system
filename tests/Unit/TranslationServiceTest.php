@@ -7,18 +7,20 @@ use App\Services\TranslationService;
 use App\Models\Translation;
 use App\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use DB;
 
 class TranslationServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     private $service;
+    private $language;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->service = new TranslationService();
-        Language::create(['code' => 'en', 'name' => 'English']);
+        $this->language = Language::create(['code' => 'en', 'name' => 'English']);
     }
 
     public function test_create_translation()
@@ -26,7 +28,7 @@ class TranslationServiceTest extends TestCase
         $data = [
             'key' => 'test.key',
             'content' => 'Test content',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ];
 
         $translation = $this->service->create($data);
@@ -38,13 +40,13 @@ class TranslationServiceTest extends TestCase
         $translation = Translation::create([
             'key' => 'test.key',
             'content' => 'Test content',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $data = [
             'key' => 'updated.key',
             'content' => 'Updated content',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ];
 
         $updated = $this->service->update($translation->id, $data);
@@ -56,7 +58,7 @@ class TranslationServiceTest extends TestCase
         Translation::create([
             'key' => 'test.key',
             'content' => 'Test content',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $results = $this->service->search(['key' => 'test']);
@@ -65,7 +67,18 @@ class TranslationServiceTest extends TestCase
 
     public function test_get_translations_performance()
     {
-        Translation::factory()->count(10000)->create();
+        $translations = [];
+        for ($i = 0; $i < 10000; $i++) {
+            $translations[] = [
+                'key' => "test.key.{$i}",
+                'content' => "Test content {$i}",
+                'language_id' => $this->language->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+        
+        DB::table('translations')->insert($translations);
         
         $startTime = microtime(true);
         $translations = $this->service->getTranslations();
