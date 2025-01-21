@@ -21,45 +21,63 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Translation Management System
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+A high-performance Laravel API for managing translations across multiple languages, designed to handle 100k+ records efficiently.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
+## Features
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **[Multi-language support]**
+- **[Tag-based organization]**
+- **[Efficient bulk operations]**
+- **[Restful API Endpoints]**
+- **[Use of Database Seeders]**
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Setup Instructions
 
-## Code of Conduct
+1. Clone the repository git clone https://github.com/yourusername/translation-api.git
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Install dependencies composer install
 
-## Security Vulnerabilities
+3. Configure environment cp .env.example .env php artisan key:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. Set up database php artisan migrate php artisan db:seed --class=TranslationSeeder
+
+5. Generate API token php artisan tinker $user = User::factory()->create() $token = $user->createToken('api-token')->plainTextToken
+
+
+## API Endpoints
+
+1. POST /api/translations - Create translation
+2. PUT /api/translations/{id} - Update translation
+3. GET /api/translations/search - Search translations
+4. GET /api/translations/export - Export translations
+
+## Design Choice
+
+1. Service Layer Pattern Clean separation of business logic Improved maintainability Reusable components
+
+2. Batch Processing
+
+3. Efficient handling of large datasets Optimized memory usage Fast response times Database Design
+
+4. Indexed key columns Optimized for search operations Many-to-many relationship for tags
+
+## Testing
+
+php artisan test
+
+## Requirements
+
+PHP 8.1+
+Laravel 10.x
+MySQL 5.7+
 
 ## License
 
