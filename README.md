@@ -2,8 +2,8 @@
 
 A high-performance Laravel API for managing translations across multiple languages, designed to handle 100k+ records efficiently.
 
-#Features
-
+**Features
+**
 Multi-language support
 Tag-based organization
 High-performance export endpoint (<500ms response time)
