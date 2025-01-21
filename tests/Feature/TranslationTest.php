@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Translation;
 use App\Models\Language;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use DB;
 
 class TranslationTest extends TestCase
 {
@@ -15,13 +16,15 @@ class TranslationTest extends TestCase
     private $user;
     private $token;
 
+    private $language;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->user = User::factory()->create();
         $this->token = $this->user->createToken('test-token')->plainTextToken;
-        Language::create(['code' => 'en', 'name' => 'English']);
+        $this->language = Language::create(['code' => 'en', 'name' => 'English']);
     }
 
     public function test_can_create_translation(){
@@ -30,37 +33,37 @@ class TranslationTest extends TestCase
         ])->postJson('/api/translations',[
             'key' => 'welcome.message',
             'content' => 'Welcome',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('translations',['key','welcome.message']);
+        $this->assertDatabaseHas('translations',['key'=>'welcome.message']);
     }
 
     public function test_can_update_translation(){
-        Translation::create([
+        $translation = Translation::create([
             'key' => 'welcome.message',
             'content' => 'Welcome',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$this->token,
-        ])->putJson('/api/translations',[
+        ])->putJson("/api/translations/{$translation->id}",[
             'key' => 'welcome.updated',
             'content' => 'Updated Welcome',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $response->assertStatus(200);
-        $response->assertDatabaseHas('translations', ['key' => 'welcome.updated']);
+        $this->assertDatabaseHas('translations', ['key' => 'welcome.updated']);
     }
 
     public function test_can_search_translation(){
         Translation::create([
             'key' => 'welcome.message',
             'content' => 'Welcome',
-            'language_id' => 1
+            'language_id' => $this->language->id
         ]);
 
         $response = $this->withHeaders([
@@ -73,7 +76,18 @@ class TranslationTest extends TestCase
 
     public function test_export_performance()
     {
-        Translation::factory()->count(10000)->create();
+        $translations = [];
+        for ($i = 0; $i < 10000; $i++) {
+            $translations[] = [
+                'key' => "test.key.{$i}",
+                'content' => "Test content {$i}",
+                'language_id' => $this->language->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+        
+        DB::table('translations')->insert($translations);
 
         $startTime = microtime(true);
 
@@ -86,6 +100,4 @@ class TranslationTest extends TestCase
         $response->assertStatus(200);
         $this->assertLessThan(500, $executionTime);
     }
-
-
 }
