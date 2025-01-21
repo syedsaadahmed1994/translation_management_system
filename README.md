@@ -2,19 +2,13 @@
 
 A high-performance Laravel API for managing translations across multiple languages, designed to handle 100k+ records efficiently.
 
-
 ## Features
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
 
 - **[Multi-language support]**
 - **[Tag-based organization]**
 - **[Efficient bulk operations]**
 - **[Restful API Endpoints]**
 - **[Use of Database Seeders]**
-
 
 ## Setup Instructions
 
